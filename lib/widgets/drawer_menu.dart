@@ -1,0 +1,181 @@
+import 'package:flutter/material.dart';
+
+// screens
+import '../screens/about_screen.dart';
+import '../screens/help_center_screen.dart';
+import '../screens/my_rides_screen.dart';
+import '../screens/notifications_screen.dart';
+import '../screens/package_screen.dart';
+import '../screens/profile_screen.dart';
+import '../screens/rewards_screen.dart';
+import '../screens/special_trip_screen.dart';
+import '../screens/wallet_screen.dart';
+
+class DrawerMenu extends StatelessWidget {
+  const DrawerMenu({super.key});
+
+  void _go(BuildContext context, Widget page) {
+    Navigator.pop(context); // close drawer
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => page),
+    );
+  }
+
+  Widget _item({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      leading: Icon(icon, size: 22),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+      ),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: onTap,
+      dense: true,
+      visualDensity: const VisualDensity(horizontal: 0, vertical: -1),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Header (User)
+            InkWell(
+              onTap: () => _go(context, const ProfileScreen()),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEDEDED),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'U',
+                        style: TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'User',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            '+9627XXXXXXXXX',
+                            style: TextStyle(fontSize: 12, color: Colors.black54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right_rounded),
+                  ],
+                ),
+              ),
+            ),
+
+            const Divider(height: 1),
+
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  // ===== Top section =====
+                  _item(
+                    context: context,
+                    icon: Icons.inventory_2_outlined, // box
+                    title: 'Package',
+                    onTap: () => _go(context, const PackageScreen()),
+                  ),
+                  _item(
+                    context: context,
+                    icon: Icons.star_border_rounded,
+                    title: 'Special Trip',
+                    onTap: () => _go(context, const SpecialTripScreen()),
+                  ),
+
+                  const Divider(height: 1),
+
+                  // ===== Middle section =====
+                  _item(
+                    context: context,
+                    icon: Icons.card_giftcard_outlined,
+                    title: 'Rewards',
+                    onTap: () => _go(context, const RewardsScreen()),
+                  ),
+                  _item(
+                    context: context,
+                    icon: Icons.history_rounded,
+                    title: 'My Rides',
+                    onTap: () => _go(context, const MyRidesScreen()),
+                  ),
+                  _item(
+                    context: context,
+                    icon: Icons.notifications_none_rounded,
+                    title: 'Notifications',
+                    onTap: () => _go(context, const NotificationsScreen()),
+                  ),
+                  _item(
+                    context: context,
+                    icon: Icons.account_balance_wallet_outlined,
+                    title: 'Wallet',
+                    onTap: () => _go(context, const WalletScreen()),
+                  ),
+
+                  const Divider(height: 1),
+
+                  // ===== Bottom section =====
+                  _item(
+                    context: context,
+                    icon: Icons.info_outline_rounded,
+                    title: 'About',
+                    onTap: () => _go(context, const AboutScreen()),
+                  ),
+                  _item(
+                    context: context,
+                    icon: Icons.headset_mic_outlined,
+                    title: 'Help Center',
+                    onTap: () => _go(context, const HelpCenterScreen()),
+                  ),
+                ],
+              ),
+            ),
+
+            const Divider(height: 1),
+
+            // Optional footer
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+              child: Row(
+                children: const [
+                  Icon(Icons.directions_bus_rounded, size: 18, color: Colors.black54),
+                  SizedBox(width: 8),
+                  Text(
+                    'Drive with JustBus',
+                    style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w700),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
