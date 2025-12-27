@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:justbus/screens/SignUp_screen.dart';
 import 'home_screen.dart'; // ✅ اضفناها
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,9 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Spacer(),
                 ],
               ),
-
               const SizedBox(height: 18),
-
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -65,9 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 18),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -93,18 +90,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       suffix: IconButton(
                         onPressed: () => setState(() => hidePass = !hidePass),
                         icon: Icon(
-                          hidePass ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                          hidePass
+                              ? Icons.visibility_rounded
+                              : Icons.visibility_off_rounded,
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
                     Row(
                       children: [
                         Checkbox(
                           value: rememberMe,
-                          onChanged: (v) => setState(() => rememberMe = v ?? true),
+                          onChanged: (v) =>
+                              setState(() => rememberMe = v ?? true),
                           activeColor: primary,
                         ),
                         const Text(
@@ -115,7 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           onPressed: () {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Forgot Password (later)')),
+                              const SnackBar(
+                                  content: Text('Forgot Password (later)')),
                             );
                           },
                           child: const Text(
@@ -125,19 +124,70 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 8),
-
                     SizedBox(
                       width: double.infinity,
                       height: 60,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // ✅ نفس الشكل، بس بدل SnackBar: روح على Home
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => const HomeScreen()),
-                          );
+                        onPressed: () async {
+                          if (emailCtrl.text.isEmpty || passCtrl.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Please enter email and password')),
+                            );
+                            return;
+                          }
+
+                          try {
+                            await FirebaseAuth.instance
+                                .signInWithEmailAndPassword(
+                              email: emailCtrl.text.trim(),
+                              password: passCtrl.text.trim(),
+                            );
+
+                            // ✅ Login success → go to Home
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const HomeScreen()),
+                            );
+                          } on FirebaseAuthException catch (e) {
+                            String message;
+
+                            switch (e.code) {
+                              case 'user-not-found':
+                                message = 'No account found for this email';
+                                break;
+
+                              case 'wrong-password':
+                                message = 'Incorrect password';
+                                break;
+
+                              case 'invalid-credential':
+                                message = 'Email or password is incorrect';
+                                break;
+
+                              case 'invalid-email':
+                                message = 'Invalid email format';
+                                break;
+
+                              case 'user-disabled':
+                                message = 'This account has been disabled';
+                                break;
+
+                              case 'too-many-requests':
+                                message = 'Too many attempts. Try again later';
+                                break;
+
+                              default:
+                                message = e.message ?? 'Login failed';
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(message)),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primary,
@@ -149,29 +199,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: const Text(
                           'Login',
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.w900),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 14),
-
               Row(
                 children: const [
                   Expanded(child: Divider()),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text('OR', style: TextStyle(fontWeight: FontWeight.w800)),
+                    child: Text('OR',
+                        style: TextStyle(fontWeight: FontWeight.w800)),
                   ),
                   Expanded(child: Divider()),
                 ],
               ),
-
               const SizedBox(height: 14),
-
               SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -182,7 +230,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   },
                   style: OutlinedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18)),
                   ),
                   icon: const Icon(Icons.g_mobiledata_rounded, size: 30),
                   label: const Text(
@@ -191,28 +240,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               const Spacer(),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Don’t have an account? ', style: TextStyle(fontWeight: FontWeight.w700)),
-                 TextButton(
-                onPressed: () {
-                 Navigator.push(
-                   context,
-                  MaterialPageRoute(
-                  builder: (_) => const SignUpScreen(),
-                 ),
-                );
-               },
-                   child: const Text(
-                  'Sign up',
-              style: TextStyle(fontWeight: FontWeight.w900),
-              ),
-              ),
-
+                  const Text('Don’t have an account? ',
+                      style: TextStyle(fontWeight: FontWeight.w700)),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SignUpScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Sign up',
+                      style: TextStyle(fontWeight: FontWeight.w900),
+                    ),
+                  ),
                 ],
               ),
             ],
