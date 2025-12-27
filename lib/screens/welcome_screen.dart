@@ -77,15 +77,14 @@ class WelcomeScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 64,
                   child: ElevatedButton(
-                   onPressed: () {
-                  Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                   builder: (_) => const LoginScreen(),
-                 ),
-                );
-                },
-
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const LoginScreen(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEAEAEA),
                       foregroundColor: const Color(0xFF1F3F54),
@@ -103,8 +102,6 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                const SizedBox(height: 16),
 
                 const SizedBox(height: 24),
               ],

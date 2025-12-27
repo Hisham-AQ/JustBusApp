@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:justbus/screens/SignUp_screen.dart';
 import 'home_screen.dart'; // ✅ اضفناها
 
 class LoginScreen extends StatefulWidget {
@@ -197,17 +198,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text('Don’t have an account? ', style: TextStyle(fontWeight: FontWeight.w700)),
-                  TextButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Go to Register (later)')),
-                      );
-                    },
-                    child: const Text(
-                      'Sign up',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
+                 TextButton(
+                onPressed: () {
+                 Navigator.push(
+                   context,
+                  MaterialPageRoute(
+                  builder: (_) => const SignUpScreen(),
+                 ),
+                );
+               },
+                   child: const Text(
+                  'Sign up',
+              style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+              ),
+
                 ],
               ),
             ],
