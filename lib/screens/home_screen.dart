@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../widgets/drawer_menu.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -14,27 +13,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final List<String> locations = const [
+  final List<String> cityLocations = const [
     'Amman',
     'Irbid',
     'Zarqa',
     'Jerash',
-    'JUST',
   ];
 
-  String fromLocation = 'Amman';
-  String toLocation = 'JUST';
+  String city = 'Amman';
+
+  /// true  => City فوق ، JUST تحت
+  /// false => JUST فوق ، City تحت
+  bool cityOnTop = true;
 
   DateTime selectedDate = DateTime(2026, 1, 1);
   int persons = 1;
-
-  void swapLocations() {
-    setState(() {
-      final tmp = fromLocation;
-      fromLocation = toLocation;
-      toLocation = tmp;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       drawer: const DrawerMenu(),
-
       body: Stack(
         children: [
           // ================= MAP =================
@@ -133,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 14),
 
+                    // ===== LOCATIONS (OLD SHAPE, WORKING) =====
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
@@ -143,28 +136,44 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Expanded(
                             child: Column(
-                              children: [
-                                _DropdownPill(
-                                  value: fromLocation,
-                                  items: locations,
-                                  onChanged: (v) {
-                                    if (v != null) setState(() => fromLocation = v);
-                                  },
-                                ),
-                                const SizedBox(height: 12),
-                                _DropdownPill(
-                                  value: toLocation,
-                                  items: locations,
-                                  onChanged: (v) {
-                                    if (v != null) setState(() => toLocation = v);
-                                  },
-                                ),
-                              ],
+                              children: cityOnTop
+                                  ? [
+                                      _DropdownPill(
+                                        value: city,
+                                        items: cityLocations,
+                                        onChanged: (v) {
+                                          if (v != null) {
+                                            setState(() => city = v);
+                                          }
+                                        },
+                                      ),
+                                      const SizedBox(height: 12),
+                                      const _FixedLocation(label: 'JUST'),
+                                    ]
+                                  : [
+                                      const _FixedLocation(label: 'JUST'),
+                                      const SizedBox(height: 12),
+                                      _DropdownPill(
+                                        value: city,
+                                        items: cityLocations,
+                                        onChanged: (v) {
+                                          if (v != null) {
+                                            setState(() => city = v);
+                                          }
+                                        },
+                                      ),
+                                    ],
                             ),
                           ),
                           const SizedBox(width: 12),
+
+                          // ===== SWAP BUTTON (REAL WORKING) =====
                           GestureDetector(
-                            onTap: swapLocations,
+                            onTap: () {
+                              setState(() {
+                                cityOnTop = !cityOnTop;
+                              });
+                            },
                             child: Container(
                               width: 58,
                               height: 58,
@@ -172,21 +181,26 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: const Color(0xFF1F4B63),
                                 borderRadius: BorderRadius.circular(29),
                               ),
-                              child: const Icon(Icons.swap_vert_rounded, color: Colors.white),
+                              child: const Icon(
+                                Icons.swap_vert_rounded,
+                                color: Colors.white,
+                              ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
 
                     const SizedBox(height: 14),
 
+                    // ===== DATE & PERSONS =====
                     Row(
                       children: [
                         Expanded(
                           child: _SmallInfoCard(
                             icon: Icons.calendar_month_rounded,
-                            text: '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                            text:
+                                '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
                             onTap: () async {
                               final picked = await showDatePicker(
                                 context: context,
@@ -194,7 +208,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 firstDate: DateTime(2020),
                                 lastDate: DateTime(2035),
                               );
-                              if (picked != null) setState(() => selectedDate = picked);
+                              if (picked != null) {
+                                setState(() => selectedDate = picked);
+                              }
                             },
                           ),
                         ),
@@ -202,8 +218,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           child: _SmallInfoCard(
                             icon: Icons.people_alt_rounded,
-                            text: persons == 1 ? '1 Person' : '$persons Persons',
-                            onTap: () => setState(() => persons = (persons % 5) + 1),
+                            text: persons == 1
+                                ? '1 Person'
+                                : '$persons Persons',
+                            onTap: () =>
+                                setState(() => persons = (persons % 5) + 1),
                           ),
                         ),
                       ],
@@ -211,11 +230,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 16),
 
+                    // ===== SEARCH =====
                     SizedBox(
                       width: double.infinity,
                       height: 64,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // TODO: Search trips
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1F4B63),
                           shape: RoundedRectangleBorder(
@@ -224,7 +246,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: const Text(
                           'Search',
-                          style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900),
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                       ),
                     ),
@@ -239,27 +264,61 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-/* ================= DRAWER ================= */
+/* ================= WIDGETS ================= */
 
 class _DropdownPill extends StatelessWidget {
   final String value;
   final List<String> items;
   final ValueChanged<String?> onChanged;
 
-  const _DropdownPill({required this.value, required this.items, required this.onChanged});
+  const _DropdownPill({
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 54,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+      ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          items: items.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+          items: items
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
           onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+}
+
+class _FixedLocation extends StatelessWidget {
+  final String label;
+  const _FixedLocation({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 54,
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
         ),
       ),
     );
@@ -271,7 +330,11 @@ class _SmallInfoCard extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
 
-  const _SmallInfoCard({required this.icon, required this.text, required this.onTap});
+  const _SmallInfoCard({
+    required this.icon,
+    required this.text,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -279,13 +342,19 @@ class _SmallInfoCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 58,
-        decoration: BoxDecoration(color: const Color(0xFFEDEDED), borderRadius: BorderRadius.circular(16)),
+        decoration: BoxDecoration(
+          color: const Color(0xFFEDEDED),
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon),
             const SizedBox(width: 10),
-            Text(text, style: const TextStyle(fontWeight: FontWeight.w800)),
+            Text(
+              text,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
           ],
         ),
       ),
