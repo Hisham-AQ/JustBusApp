@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../widgets/drawer_menu.dart';
+import 'search_results_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,8 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String city = 'Amman';
 
-  /// true  => City فوق ، JUST تحت
-  /// false => JUST فوق ، City تحت
   bool cityOnTop = true;
 
   DateTime selectedDate = DateTime(2026, 1, 1);
@@ -148,10 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         },
                                       ),
                                       const SizedBox(height: 12),
-                                      const _FixedLocation(label: 'JUST'),
+                                      const _FixedLocation(label: 'JUST university'),
                                     ]
                                   : [
-                                      const _FixedLocation(label: 'JUST'),
+                                      const _FixedLocation(label: 'JUST university'),
                                       const SizedBox(height: 12),
                                       _DropdownPill(
                                         value: city,
@@ -236,8 +236,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 64,
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO: Search trips
-                        },
+               Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SearchResultsScreen(
+                      from: cityOnTop ? city : 'JUST',
+                      to: cityOnTop ? 'JUST' : city,
+                      date: '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                  persons: persons,
+                   ),
+               ),
+              );
+               },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1F4B63),
                           shape: RoundedRectangleBorder(
