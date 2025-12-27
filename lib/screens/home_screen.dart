@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../widgets/drawer_menu.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const _AppDrawer(),
+      drawer: const DrawerMenu(),
 
       body: Stack(
         children: [
@@ -238,99 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 /* ================= DRAWER ================= */
-
-class _AppDrawer extends StatelessWidget {
-  const _AppDrawer();
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      width: MediaQuery.of(context).size.width * 0.82,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(26),
-          bottomRight: Radius.circular(26),
-        ),
-      ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 14, 18, 12),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Color(0xFFEDEDED),
-                    child: Text('U', style: TextStyle(fontWeight: FontWeight.w900)),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text('User', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-                        SizedBox(height: 4),
-                        Text('+9627XXXXXXXX', style: TextStyle(color: Colors.black54)),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right_rounded),
-                ],
-              ),
-            ),
-            const Divider(),
-
-            Expanded(
-              child: ListView(
-                children: [
-                  _DrawerTile(icon: Icons.inventory_rounded, title: 'Package'),
-                  _DrawerTile(icon: Icons.star_rounded, title: 'Special Trip'),
-                  const Divider(),
-                  _DrawerTile(icon: Icons.redeem_rounded, title: 'Rewards'),
-                  _DrawerTile(icon: Icons.history_rounded, title: 'My Rides'),
-                  _DrawerTile(icon: Icons.notifications_none_rounded, title: 'Notifications'),
-                  _DrawerTile(icon: Icons.account_balance_wallet_outlined, title: 'Wallet'),
-                  const Divider(),
-                  _DrawerTile(icon: Icons.info_outline_rounded, title: 'About'),
-                  _DrawerTile(icon: Icons.headset_mic_rounded, title: 'Help Center'),
-                ],
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(18),
-              child: Row(
-                children: const [
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/* ================= SMALL WIDGETS ================= */
-
-class _DrawerTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-
-  const _DrawerTile({required this.icon, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFF1F4B63)),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-      trailing: const Icon(Icons.chevron_right_rounded),
-      onTap: () => Navigator.pop(context),
-    );
-  }
-}
 
 class _DropdownPill extends StatelessWidget {
   final String value;

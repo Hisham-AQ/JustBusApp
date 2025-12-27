@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-// screens
 import '../screens/about_screen.dart';
 import '../screens/help_center_screen.dart';
 import '../screens/my_rides_screen.dart';
@@ -159,20 +157,7 @@ class DrawerMenu extends StatelessWidget {
 
             const Divider(height: 1),
 
-            // Optional footer
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
-              child: Row(
-                children: const [
-                  Icon(Icons.directions_bus_rounded, size: 18, color: Colors.black54),
-                  SizedBox(width: 8),
-                  Text(
-                    'Drive with JustBus',
-                    style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-            ),
+
           ],
         ),
       ),
