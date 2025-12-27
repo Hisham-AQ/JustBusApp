@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -35,15 +34,13 @@ class WelcomeScreen extends StatelessWidget {
                       'assets/images/JustBus_Main_Logo.png',
                       width: 350,
                       fit: BoxFit.contain,
-                      filterQuality: FilterQuality.low,
-                      cacheWidth: 700,
                     ),
                   ),
                 ),
 
                 const Spacer(),
 
-                // ===== Text (FIXED like reference) =====
+                // ===== Text =====
                 const Text(
                   'We’re',
                   style: TextStyle(
@@ -74,16 +71,13 @@ class WelcomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 28),
 
-                // ===== Button =====
+                // ===== Get Started Button =====
                 SizedBox(
                   width: double.infinity,
                   height: 64,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      );
+                      // TODO: Navigate to Login screen
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFEAEAEA),
@@ -103,7 +97,9 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 36),
+                const SizedBox(height: 16),
+
+                const SizedBox(height: 24),
               ],
             ),
           ),
